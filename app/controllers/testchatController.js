@@ -49,14 +49,29 @@ export function streamResponse(req, res) {
   res.setHeader("Transfer-Encoding", "chunked");
 
   const chunks = [
-    "This ",
-    "is ",
-    "a ",
-    "streaming ",
-    "response.\n\n",
-    "- Point 1\n",
-    "- Point 2\n"
-  ];
+  "Space ", "exploration ", "is ", "the ", "discovery ", "and ", "exploration ", 
+  "of ", "celestial ", "structures ", "in ", "outer ", "space ", "by ", "means ", 
+  "of ", "evolving ", "and ", "growing ", "space ", "technology.\n", "While ", 
+  "the ", "study ", "of ", "space ", "is ", "carried ", "out ", "mainly ", "by ", 
+  "astronomers ", "with ", "telescopes, ", "the ", "physica l", "exploration ", 
+  "of ", "space ", "is ", "conducted ", "both ", "by ", "unmanned ", "robotic ", 
+  "space ", "probes ", "and ", "human ", "spaceflight.\n\n", "The ", "era ", "of ", 
+  "modern ", "rocketry ", "began ", "in ", "the ", "early ", "20th ", "century, ", 
+  "driven ", "by ", "the ", "visionary ", "work ", "of ", "scientists ", "like ", 
+  "Konstantin ", "Tsiolkovsky ", "and ", "Robert ", "Goddard. ", "However, ", 
+  "it ", "wasn't ", "until ", "the ", "mid-1950s ", "that ", "the ", "technology ", 
+  "matured ", "enough ", "to ", "reach ", "orbit.\n", "The ", "launch ", "of ", 
+  "Sputnik ", "1 ", "in ", "1957 ", "marked ", "the ", "official ", "start ", 
+  "of ", "the ", "Space ", "Race, ", "a ", "period ", "of ", "intense ", "rivalry ", 
+  "between ", "the ", "United ", "States ", "and ", "the ", "Soviet ", "Union. ", 
+  "This ", "competition ", "accelerated ", "technological ", "leaps, ", 
+  "leading ", "to ", "the ", "historic ", "Apollo ", "11 ", "mission ", "in ", 
+  "1969, ", "where ", "humans ", "first ", "set ", "foot ", "on ", "the ", "lunar ", 
+  "surface.\n\n", "Today, ", "the ", "focus ", "has ", "shifted ", "toward ", 
+  "Mars ", "colonization, ", "asteroid ", "mining, ", "and ", "deep ", "space ", 
+  "telescopes ", "capable ", "of ", "peering ", "back ", "to ", "the ", "dawn ", 
+  "of ", "the ", "universe."
+];
 
   let i = 0;
 
@@ -68,7 +83,7 @@ export function streamResponse(req, res) {
       clearInterval(interval);
       res.end();
     }
-  }, 300);
+  }, 50);
 }
 
 export function multiMessage(req, res) {
