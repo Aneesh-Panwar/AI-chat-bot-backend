@@ -1,12 +1,14 @@
 import { OpenAI } from "openai";
 import "dotenv/config";
 
+
 export const client = new OpenAI({
   baseURL: "https://router.huggingface.co/v1",
   apiKey: process.env.HF_TOKEN,
 });
 
-export async function genereteLLMResponse({model,messages}){
+// Full response from LLM
+export async function generateLLMResponse({model,messages}){
 
   const response = await client.chat.completions.create({
     model,
@@ -18,11 +20,13 @@ export async function genereteLLMResponse({model,messages}){
   return response.choices[0].message.content;
 }
 
+
+// Streaming response from LLM
 export async function streamLLM({model,messages},onChunk) {
   const response = await fetch("https://router.huggingface.co/v1/chat/completions", {
     method: "POST",
     headers: {
-      "Authorization": `Bearer ${process.env.HF_API_KEY}`,
+      "Authorization": `Bearer ${process.env.HF_TOKEN}`,
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
