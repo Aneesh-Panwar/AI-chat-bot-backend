@@ -83,7 +83,7 @@ export function streamResponse(req, res) {
       clearInterval(interval);
       res.end();
     }
-  }, 50);
+  }, 5);
 }
 
 export function multiMessage(req, res) {

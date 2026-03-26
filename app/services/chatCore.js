@@ -65,7 +65,7 @@ export async function chatCore(userInput, options = {}) {
     try {
       model = chooseModel(intent, sections.length);
     } catch (err) {
-      console.warn("[Model चयन Error]:", err.message);
+      console.warn("[Model Error]:", err.message);
       model = "default"; // fallback
     }
 
