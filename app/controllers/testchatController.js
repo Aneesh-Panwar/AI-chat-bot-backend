@@ -47,6 +47,7 @@ export function largeResponse(req, res) {
 export function streamResponse(req, res) {
   res.setHeader("Content-Type", "text/plain");
   res.setHeader("Transfer-Encoding", "chunked");
+  res.setHeader("Connection", "keep-alive");
 
   const chunks = [
   "Space ", "exploration ", "is ", "the ", "discovery ", "and ", "exploration ", 
@@ -74,20 +75,68 @@ export function streamResponse(req, res) {
 ];
 
   let i = 0;
+  let isClosed = false;
+  
+  const cleanup = (reason = "unknown") => {
+    if (isClosed) return;
+    isClosed = true;
 
-  const interval = setInterval(() => {
-    if (i < chunks.length) {
-      res.write(chunks[i]);
-      i++;
-    } else {
-      clearInterval(interval);
-      res.end();
+    console.log(`Stream closed: ${reason}`);
+    clearInterval(interval);
+
+    try {
+      if (!res.writableEnded) {
+        res.end();
+      }
+    } catch (err) {
+      console.error("Error while ending response:", err);
     }
-  }, 5);
-}
+  };
+  const interval = setInterval(() => {
+  try{
+    if(isClosed) return;
 
-export function multiMessage(req, res) {
-  res.json({
+    if (i < chunks.length) {
+      const success = res.write(chunks[i]);
+
+      if (!success) {
+          console.log("⏳ Backpressure: waiting for drain...");
+          res.once("drain", () => {
+            console.log("Drain event, resuming...");
+          });
+      }
+      i++;
+    }else{
+        cleanup("Completed");
+    }
+  }catch(err){
+    console.log("Streaming Error");
+    cleanup("Write error");
+  }
+  }, 5);
+
+  req.on("aborted", () => {
+    cleanup("client aborted");
+  });
+
+  res.on("close", () => {
+    cleanup("response closed");
+  });
+
+  res.on("error", (err) => {
+    console.error("Response error:", err);
+    cleanup("response error");
+  });
+
+  req.on("error", (err) => {
+    console.error("Request error:", err);
+    cleanup("request error");
+  });
+    
+}
+  
+  export function multiMessage(req, res) {
+    res.json({
     replies: [
       "First part of response",
       "Second part of response",
