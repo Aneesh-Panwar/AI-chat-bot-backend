@@ -12,7 +12,7 @@ let messages = [
 ];
 
 export async function chatCore(userInput, options = {}) {
-  const { onChunk, stream = false } = options;
+  const { onChunk, stream = false, signal } = options;
 
   let fullResponse = "";
 
@@ -75,7 +75,7 @@ export async function chatCore(userInput, options = {}) {
         await streamLLM({ model, messages }, (chunk) => {
           fullResponse += chunk;
           if (onChunk) onChunk(chunk);
-        });
+        },signal);
       } catch (err) {
         console.error("[Streaming Error]:", err.message);
         throw new Error("Streaming failed");

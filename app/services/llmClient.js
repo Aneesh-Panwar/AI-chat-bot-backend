@@ -22,7 +22,7 @@ export async function generateLLMResponse({model,messages}){
 
 
 // Streaming response from LLM
-export async function streamLLM({model,messages},onChunk) {
+export async function streamLLM({model,messages},onChunk,signal) {
   try{
     const response = await fetch("https://router.huggingface.co/v1/chat/completions", {
       method: "POST",
@@ -34,8 +34,13 @@ export async function streamLLM({model,messages},onChunk) {
         model,
         messages,
         stream: true
-      })
+      }),
+      signal
     });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`);
+    }
     
     const reader = response.body.getReader();
     const decoder = new TextDecoder("utf-8");
@@ -43,12 +48,13 @@ export async function streamLLM({model,messages},onChunk) {
     let buffer = "";
     
     while (true) {
-      const { done, value } = await reader.read();
+    const { done, value } = await reader.read();
     if (done) break;
 
     buffer += decoder.decode(value, { stream: true });
 
     const lines = buffer.split("\n");
+    buffer = lines.pop();
     
     for (let line of lines) {
       line = line.trim();
@@ -65,17 +71,23 @@ export async function streamLLM({model,messages},onChunk) {
         const token = json.choices?.[0]?.delta?.content;
         
         if (token) {
-          onChunk(token); 
+          await onChunk(token); 
         }
 
       } catch (e) {
         // ignore partial JSON
       }
     }
-    
-    buffer = "";
   }
 }catch(e){
-  console.log("couldnt fetch the stream: ",e);
+  if (e.name === "AbortError") {
+    console.log("Stream aborted");
+  } else {
+    console.error("Stream error:", e);
+  }
+}finally{
+  try{
+    reader?.cancel();
+  }catch  {}
 }
 }
