@@ -1,13 +1,13 @@
 # ! IMPORTANT : project is under building process.. NOT COMPELETE YET..!
 
 
-# 🎓 AI College Guide Chatbot
+# AI College Guide Chatbot
 
 A domain-specific AI chatbot for **Government Polytechnic Dehradun**, built using a lightweight **RAG-lite architecture** with streaming support and modular backend design.
 
 ---
 
-# 🚀 Project Overview
+# Project Overview
 
 This chatbot answers **only college-related queries** using structured data and controlled LLM responses.
 
@@ -21,30 +21,40 @@ It is designed to:
 
 ---
 
-# 🧠 Core Features
+# Core Features
 
-### ✅ Domain-Specific AI
+### Domain-Specific AI
 
 * Answers only questions related to the college
 * Rejects out-of-scope queries
 
-### ⚡ RAG-Lite Architecture
+### RAG-Lite Architecture
 
 * No embeddings
 * No vector database
 * Uses manual section-based retrieval
 
-### 🔄 Streaming Support
+### Streaming Support
 
 * Real-time token streaming from LLM
 * Supports **Stop Generation** (AbortController)
 
-### 🧩 Modular Backend Design
+### Response mode switching
+
+* Can switch between full response and stream response using command line
+* For front-end two separate API's been exposed 
+
+### Modular Backend Design
 
 * Clean separation of concerns
 * Easily extendable
 
-### 💬 Multi-turn Conversation Handling
+### Dynamic model selection
+
+* Depending on user messages it switches between models (FAST,SMART)
+* Saves tokens and adapts creativity and facts accordingly
+
+### Multi-turn Conversation Handling (In building phase)
 
 * Follow-up query resolution
 * Topic memory using `lastSections`
@@ -52,12 +62,15 @@ It is designed to:
 
 ---
 
-# 🏗️ Architecture
+# Architecture
 
 ## Directory Structure
 
 ```
 backend/
+
+  config/
+    models.js
 
   data/
     overview.js
@@ -66,6 +79,7 @@ backend/
   logic/
     normalize.js
     retriever.js
+    keywords.js
     intent.js
     followup.js
 
@@ -90,7 +104,7 @@ backend/
 
 ---
 
-# 🔁 System Flow
+# System Flow
 
 ```
 User Input
@@ -103,7 +117,7 @@ Retriever (section-based)
     ↓
 Intent Detection
     ↓
-Model Router
+Model Router (model selection)
     ↓
 LLM (Streaming / Full Response)
     ↓
@@ -112,7 +126,7 @@ Response Output (API / Console)
 
 ---
 
-# 🤖 LLM Integration
+# LLM Integration
 
 Uses **Hugging Face Router API**
 
@@ -125,7 +139,7 @@ Uses **Hugging Face Router API**
 
 ---
 
-# 🧠 Model Routing Logic
+# Model Routing Logic
 
 ```
 if retrievedSections.length > 0
@@ -140,7 +154,7 @@ else
 
 ---
 
-# ⚙️ chatCore (Central Engine)
+# chatCore (Central Engine)
 
 Supports both:
 
@@ -157,12 +171,13 @@ chatCore(message, {
 
 ---
 
-# 🌐 API Usage
+# API Usage
 
 ### Endpoint
 
 ```
-POST /chat
+POST api/chat/stream
+POST api/chat/
 ```
 
 ### Request Body
@@ -175,7 +190,7 @@ POST /chat
 
 ---
 
-## 🔄 Streaming Response
+## Streaming Response
 
 The API returns **chunked text stream**.
 
@@ -202,7 +217,7 @@ while (true) {
 
 ---
 
-# 🛑 Stop Generation
+# Stop Generation
 
 ### Frontend
 
@@ -217,12 +232,17 @@ controller.abort();
 
 ---
 
-# 💻 Console Mode
+# Console Mode
 
 Run chatbot in terminal:
 
+.env
 ```
-node backend/server.js
+CHAT_MODE = console
+```
+
+```
+node app/index.js
 ```
 
 ### Commands
@@ -234,9 +254,9 @@ node backend/server.js
 
 ---
 
-# 🧠 Conversation Handling
+# Conversation Handling
 
-### ✔️ Follow-up Resolution
+### Follow-up Resolution
 
 Handles vague inputs like:
 
@@ -253,7 +273,7 @@ Uses:
 
 ---
 
-# 🔐 Design Principles
+# Design Principles
 
 * LLMs are stateless → memory handled manually
 * Retrieval defines knowledge
@@ -263,8 +283,9 @@ Uses:
 
 ---
 
-# ⚠️ Current Limitations
+# Current Limitations
 
+* Needs proper error handeling yet
 * No session-based memory (global state)
 * Keyword-based retrieval (no semantic understanding)
 * No section scoring (priority not handled)
@@ -272,43 +293,44 @@ Uses:
 
 ---
 
-# 🛠️ Setup
+# Setup
 
-## 1️⃣ Install dependencies
+## 1 Install dependencies
 
 ```
 npm install
 ```
 
-## 2️⃣ Environment variables
+## 2 Environment variables
 
 Create `.env`:
 
 ```
-MODE=api
+CHAT_MODE=auto
 PORT=3000
+MODEL_MODE=auto
 HF_API_KEY=your_key_here
 ```
 
 ---
 
-## 3️⃣ Run
+## 3 Run
 
 ### Console mode
 
 ```
-MODE=console node backend/server.js
+CHAT_MODE=console node app/index.js
 ```
 
 ### API mode
 
 ```
-MODE=api node backend/server.js
+CHAT_MODE=api node app/index.js
 ```
 
 ---
 
-# 🔮 Future Improvements
+# Future Improvements
 
 * Session-based chat memory
 * Query rewriting (better follow-ups)
@@ -319,7 +341,7 @@ MODE=api node backend/server.js
 
 ---
 
-# 📌 Tech Stack
+# Tech Stack
 
 * Node.js
 * Express
@@ -329,17 +351,16 @@ MODE=api node backend/server.js
 
 ---
 
-# 💡 Key Learning Outcomes
+# Key Learning Outcomes
 
 * Built a chatbot **without LangChain or vector DB**
 * Understood **RAG fundamentals deeply**
 * Implemented **streaming LLM pipeline**
 * Designed **modular backend architecture**
-* Handled **multi-turn conversations manually**
 
 ---
 
-# 🙌 Author
+# Author
 
 Built as a learning project to understand **how real AI chat systems work internally**.
 

@@ -96,7 +96,7 @@ export async function streamResponseChathandler(req,res) {
       }
     });
   
-    cleanup();
+    cleanup("completed");
 
   } catch (error) {
 

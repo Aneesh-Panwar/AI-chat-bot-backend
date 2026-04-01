@@ -44,7 +44,7 @@ export function largeResponse(req, res) {
   });
 }
 
-export function streamResponse(req, res) {
+export async function streamResponse(req, res) {
   res.setHeader("Content-Type", "text/plain");
   res.setHeader("Transfer-Encoding", "chunked");
   res.setHeader("Connection", "keep-alive");
@@ -92,6 +92,10 @@ export function streamResponse(req, res) {
       console.error("Error while ending response:", err);
     }
   };
+
+  // just to mimic a bit delay
+  await new Promise(resolve=>setTimeout(resolve,2000));
+
   const interval = setInterval(() => {
   try{
     if(isClosed) return;
