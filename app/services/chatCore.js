@@ -70,22 +70,29 @@ export async function chatCore(userInput, options = {}) {
     }
 
     // LLM response handling
-    if (stream) {
-      try {
-        await streamLLM({ model, messages }, (chunk) => {
-          fullResponse += chunk;
-          if (onChunk) onChunk(chunk);
-        },signal);
-      } catch (err) {
-        console.error("[Streaming Error]:", err.message);
-        throw new Error("Streaming failed");
-      }
-    } else {
-      try {
-        fullResponse = await generateLLMResponse({ model, messages });
-      } catch (err) {
-        console.error("[LLM Error]:", err.message);
-        throw new Error("LLM response failed");
+    // console.log(process.env.DEVELOPMENT_MODE);
+
+    if(process.env.DEVELOPMENT_MODE=="testing"){
+      fullResponse = "hi there...just testing it.."
+    }else{
+
+      if (stream) {
+        try {
+          await streamLLM({ model, messages }, (chunk) => {
+            fullResponse += chunk;
+            if (onChunk) onChunk(chunk);
+          },signal);
+        } catch (err) {
+          console.error("[Streaming Error]:", err.message);
+          throw new Error("Streaming failed");
+        }
+      } else {
+        try {
+          fullResponse = await generateLLMResponse({ model, messages });
+        } catch (err) {
+          console.error("[LLM Error]:", err.message);
+          throw new Error("LLM response failed");
+        }
       }
     }
 
@@ -111,4 +118,14 @@ export async function chatCore(userInput, options = {}) {
 
     return "Something went wrong. Please try again.";
   }
+}
+
+
+function buildMessage(){
+  return;
+}
+
+
+function RAG(){
+  return;
 }

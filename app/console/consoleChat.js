@@ -7,7 +7,7 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
-let STREAM_MODE = true;
+let STREAM_MODE = false;
 
 async function handleInput(input) {
 
@@ -47,6 +47,12 @@ async function handleInput(input) {
     console.log("\n[ERROR]:", err.message);
   }
 }
+
+
+
+
+
+
 
 console.log("Type 'exit' to quit\n");
 
