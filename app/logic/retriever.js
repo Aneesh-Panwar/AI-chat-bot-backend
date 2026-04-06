@@ -22,6 +22,15 @@ export function getRelevantSections(text, sections) {
   if (matches(text, KEYWORDS.contact)) {
     results.push(sections.contact);
   }
+  if (matches(text, KEYWORDS.departments)) {
+    results.push(sections.departments);
+  }
+  if (matches(text, KEYWORDS.placements)) {
+    results.push(sections.placements);
+  }
+  if (matches(text, KEYWORDS.facilities)) {
+    results.push(sections.facilities);
+  }
 
   return results; 
 }

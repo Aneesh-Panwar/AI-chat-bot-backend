@@ -111,6 +111,8 @@ export async function chatCore(userInput, options = {}) {
       ];
     }
 
+    console.log(messages);
+
     return fullResponse;
 
   } catch (err) {

@@ -4,7 +4,7 @@ import { chatCore } from "../services/chatCore.js";
 // Readline object for console I/O
 const rl = readline.createInterface({
   input: process.stdin,
-  output: process.stdout
+  output: null
 });
 
 let STREAM_MODE = false;
@@ -12,6 +12,7 @@ let STREAM_MODE = false;
 async function handleInput(input) {
 
   const cmd = input.trim().toLowerCase();
+  
 
   // Response mode switching
   if (cmd === "/>stream") {
@@ -55,17 +56,16 @@ async function handleInput(input) {
 
 
 console.log("Type 'exit' to quit\n");
-
+process.stdout.write("\nYou: ");
 // main function for console chat
 rl.on("line", async (input) => {
+  input = input.trim();
   if (input === "exit") {
     rl.close();
     return;
   }
 
+  
   await handleInput(input);
-  rl.prompt(); //to print that "you :" prompt
+  process.stdout.write("\nYou: ");
 });
-
-rl.setPrompt("You: ");
-rl.prompt(); 
