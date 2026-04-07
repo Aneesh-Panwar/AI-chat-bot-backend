@@ -8,7 +8,7 @@ export const KEYWORDS = {
   ],
 
   fees: [
-    "fee", "fees", "feees", "cost", "charge", "charges", "price", "amount"
+    "fee", "fees", "feees", "cost", "charge", "charges", "price", "amount","expensive","cheap","costly"
   ],
 
   admission: [
@@ -26,7 +26,7 @@ export const KEYWORDS = {
 
   placements: [
     "placement", "placements", "job", "jobs", "package", "pakage", "recruitment",
-    "company", "companies", "compony", "componies", "salary", "ctc"
+    "company", "companies", "compony", "componies", "salary", "ctc","career"
   ],
 
   facilities: [

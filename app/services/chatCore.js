@@ -6,6 +6,7 @@ import { OVERVIEW } from "../data/overview.js";
 import { SYSTEM_PROMPT } from "../prompts/prompts.js";
 import { chooseModel } from "../services/modelRouter.js";
 import { generateLLMResponse, streamLLM } from "./llmClient.js";
+import { handleConversation } from "../logic/followup.js";
 
 let messages = [
   { role: "system", content: SYSTEM_PROMPT }
@@ -33,6 +34,7 @@ export async function chatCore(userInput, options = {}) {
       console.warn("[Retriever Error]:", err.message);
     }
 
+    
     // Removing old dynamic system context
     messages = messages.filter(msg => {
       return !(
@@ -45,21 +47,20 @@ export async function chatCore(userInput, options = {}) {
     });
 
     // Injecting fresh context
-    if (sections.length > 0) {
-      messages.push({
-        role: "system",
-        content: `Relevant college information:\n${sections.join("\n")}`
-      });
-    } else if (intent === "GENERAL") {
-      messages.push({
-        role: "system",
-        content: OVERVIEW
-      });
+    if (intent === "GENERAL" && sections.length === 0) {
+      sections = OVERVIEW;
     }
 
+    const convo = handleConversation(sections,cleanText);
+
+    messages.push({
+      role: "system",
+      content: `Relevant college information:\n${sections.join("\n")}`
+    });
+    
     // Message build (user input)
     messages.push({ role: "user", content: userInput });
-
+    
     //Model selection
     let model;
     try {
@@ -71,7 +72,7 @@ export async function chatCore(userInput, options = {}) {
 
     // LLM response handling
     // console.log(process.env.DEVELOPMENT_MODE);
-
+    
     if(process.env.DEVELOPMENT_MODE=="testing"){
       fullResponse = "hi there...just testing it.."
     }else{
@@ -95,7 +96,7 @@ export async function chatCore(userInput, options = {}) {
         }
       }
     }
-
+    
     // Message build (LLM response)
     messages.push({
       role: "assistant",
@@ -110,7 +111,8 @@ export async function chatCore(userInput, options = {}) {
         ...messages.slice(-(MAX - 1))
       ];
     }
-
+    
+     
     console.log(messages);
 
     return fullResponse;

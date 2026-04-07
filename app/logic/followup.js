@@ -7,8 +7,15 @@ const conversationState = {
 
 const FOLLOWUPS = [
   "ok",
+  "ok...",
+  "and",
   "okay",
+  "what about",
   "go on",
+  "this",
+  "that",
+  "how",
+  "when",
   "continue",
   "yes",
   "yeah",
@@ -16,21 +23,34 @@ const FOLLOWUPS = [
   "more"
 ];
 
+
+function isFollowupQuery(input){
+
+    const tokens = input.split(" ");
+    
+    return(
+        FOLLOWUPS.includes(input) ||
+        FOLLOWUPS.includes(tokens[0])
+    );
+}
+
+
 export function handleConversation(sections,cleanInput){
 
-    const  isFollowup = FOLLOWUPS.includes(cleanInput);
-
+    
     if(sections.length > 0){
-
+        
         conversationState.lastSection = sections;
         conversationState.suggestedSections = [];
         conversationState.awaitingClarification = false;
-
+        
         return {
             sections,
             action: "PROCEED"
         }
     }
+    
+    const isFollowup = isFollowupQuery(cleanInput);
 
     if(isFollowup && conversationState.lastSection.length > 0){
         return {
